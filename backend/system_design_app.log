@@ -1,0 +1,94 @@
+2025-11-01 17:59:27,238 - main - INFO - 🚀 Initializing System Design RAG...
+2025-11-01 17:59:27,238 - rag_pipeline - INFO - 🔧 Initializing SystemDesignRAG...
+2025-11-01 17:59:27,238 - models.llm - INFO - 🤖 Initializing OllamaLLM with model: llama2
+2025-11-01 17:59:27,262 - models.llm - INFO - ✅ Ollama client created successfully
+2025-11-01 17:59:27,263 - models.llm - INFO - ℹ️  No OpenAI API key found, will rely on Ollama only
+2025-11-01 17:59:27,263 - rag_pipeline - INFO - 🧠 LLM initialized with model: llama2
+2025-11-01 17:59:27,263 - rag_pipeline - INFO - ✅ SystemDesignRAG initialization complete!
+2025-11-01 17:59:27,263 - main - INFO - ✅ System Design RAG initialized successfully!
+2025-11-01 17:59:37,030 - main - INFO - 🚀 Initializing System Design RAG...
+2025-11-01 17:59:37,031 - rag_pipeline - INFO - 🔧 Initializing SystemDesignRAG...
+2025-11-01 17:59:37,031 - models.llm - INFO - 🤖 Initializing OllamaLLM with model: llama2
+2025-11-01 17:59:37,054 - models.llm - INFO - ✅ Ollama client created successfully
+2025-11-01 17:59:37,054 - models.llm - INFO - ℹ️  No OpenAI API key found, will rely on Ollama only
+2025-11-01 17:59:37,054 - rag_pipeline - INFO - 🧠 LLM initialized with model: llama2
+2025-11-01 17:59:37,054 - rag_pipeline - INFO - ✅ SystemDesignRAG initialization complete!
+2025-11-01 17:59:37,054 - main - INFO - ✅ System Design RAG initialized successfully!
+2025-11-01 17:59:56,857 - main - INFO - 📨 Received design request: 'Design a small scale url shortner...'
+2025-11-01 17:59:56,857 - main - INFO - 🔄 Processing request with RAG pipeline...
+2025-11-01 17:59:56,857 - rag_pipeline - INFO - 🎯 Starting generation for question: 'Design a small scale url shortner...'
+2025-11-01 17:59:56,857 - rag_pipeline - INFO - 📝 Enhanced prompt created, sending to LLM...
+2025-11-01 17:59:56,857 - rag_pipeline - INFO - 📏 Prompt length: 411 characters
+2025-11-01 17:59:56,857 - models.llm - INFO - 🚀 Starting LLM generation...
+2025-11-01 17:59:56,857 - models.llm - INFO - 🔍 Checking Ollama availability...
+2025-11-01 17:59:56,857 - models.llm - INFO - 🔍 Checking if Ollama is available...
+2025-11-01 17:59:56,857 - models.llm - INFO - 📋 Fetching list of available models from Ollama...
+2025-11-01 17:59:56,863 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-11-01 17:59:56,863 - models.llm - INFO - 📝 Available models: ['llama2:latest']
+2025-11-01 17:59:56,863 - models.llm - INFO - ✅ Model 'llama2' is available in Ollama
+2025-11-01 17:59:56,863 - models.llm - INFO - ✅ Ollama is available, attempting generation...
+2025-11-01 17:59:56,863 - models.llm - INFO - 📋 Added system prompt to messages
+2025-11-01 17:59:56,863 - models.llm - INFO - 💬 Prepared 2 messages for Ollama
+2025-11-01 17:59:56,863 - models.llm - INFO - 🎯 Calling Ollama with model: llama2
+2025-11-01 18:01:01,698 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-11-01 18:01:01,703 - models.llm - INFO - 🎉 Ollama responded in 64.84 seconds
+2025-11-01 18:01:01,703 - models.llm - INFO - 📝 Response content length: 5376 characters
+2025-11-01 18:01:01,703 - rag_pipeline - INFO - 🎉 LLM response received in 64.85 seconds
+2025-11-01 18:01:01,703 - rag_pipeline - INFO - 📊 Response length: 5376 characters
+2025-11-01 18:01:01,703 - rag_pipeline - INFO - 🔍 Response preview: 'System Design Solution for a Small Scale URL Shortener
+=============================================...'
+2025-11-01 18:01:01,703 - main - INFO - ✅ Request processed successfully in 64.85 seconds
+2025-11-01 18:01:01,703 - main - INFO - 📤 Response length: 5376 characters
+2025-11-01 18:05:38,366 - main - INFO - 📨 Received design request: 'Design a rate limiter. This is to prepare for a system design interview. How should I approach the p...'
+2025-11-01 18:05:38,366 - main - INFO - 🔄 Processing request with RAG pipeline...
+2025-11-01 18:05:38,366 - rag_pipeline - INFO - 🎯 Starting generation for question: 'Design a rate limiter. This is to prepare for a sy...'
+2025-11-01 18:05:38,367 - rag_pipeline - INFO - 📝 Enhanced prompt created, sending to LLM...
+2025-11-01 18:05:38,367 - rag_pipeline - INFO - 📏 Prompt length: 567 characters
+2025-11-01 18:05:38,367 - models.llm - INFO - 🚀 Starting LLM generation...
+2025-11-01 18:05:38,367 - models.llm - INFO - 🔍 Checking Ollama availability...
+2025-11-01 18:05:38,367 - models.llm - INFO - 🔍 Checking if Ollama is available...
+2025-11-01 18:05:38,367 - models.llm - INFO - 📋 Fetching list of available models from Ollama...
+2025-11-01 18:05:38,373 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-11-01 18:05:38,375 - models.llm - INFO - 📝 Available models: ['llama2:latest']
+2025-11-01 18:05:38,375 - models.llm - INFO - ✅ Model 'llama2' is available in Ollama
+2025-11-01 18:05:38,375 - models.llm - INFO - ✅ Ollama is available, attempting generation...
+2025-11-01 18:05:38,376 - models.llm - INFO - 📋 Added system prompt to messages
+2025-11-01 18:05:38,376 - models.llm - INFO - 💬 Prepared 2 messages for Ollama
+2025-11-01 18:05:38,376 - models.llm - INFO - 🎯 Calling Ollama with model: llama2
+2025-11-01 18:06:24,259 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-11-01 18:06:24,262 - models.llm - INFO - 🎉 Ollama responded in 45.89 seconds
+2025-11-01 18:06:24,262 - models.llm - INFO - 📝 Response content length: 3671 characters
+2025-11-01 18:06:24,262 - rag_pipeline - INFO - 🎉 LLM response received in 45.90 seconds
+2025-11-01 18:06:24,263 - rag_pipeline - INFO - 📊 Response length: 3671 characters
+2025-11-01 18:06:24,263 - rag_pipeline - INFO - 🔍 Response preview: ' System Design Solution for a Rate limiter:
+
+### High-level Architecture Diagram
+
+The high-level arc...'
+2025-11-01 18:06:24,263 - main - INFO - ✅ Request processed successfully in 45.90 seconds
+2025-11-01 18:06:24,263 - main - INFO - 📤 Response length: 3671 characters
+2025-11-01 18:09:58,793 - main - INFO - 📨 Received design request: 'Hello, how are you?...'
+2025-11-01 18:09:58,794 - main - INFO - 🔄 Processing request with RAG pipeline...
+2025-11-01 18:09:58,794 - rag_pipeline - INFO - 🎯 Starting generation for question: 'Hello, how are you?...'
+2025-11-01 18:09:58,794 - rag_pipeline - INFO - 📝 Enhanced prompt created, sending to LLM...
+2025-11-01 18:09:58,794 - rag_pipeline - INFO - 📏 Prompt length: 397 characters
+2025-11-01 18:09:58,794 - models.llm - INFO - 🚀 Starting LLM generation...
+2025-11-01 18:09:58,794 - models.llm - INFO - 🔍 Checking Ollama availability...
+2025-11-01 18:09:58,794 - models.llm - INFO - 🔍 Checking if Ollama is available...
+2025-11-01 18:09:58,794 - models.llm - INFO - 📋 Fetching list of available models from Ollama...
+2025-11-01 18:09:58,800 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-11-01 18:09:58,800 - models.llm - INFO - 📝 Available models: ['llama2:latest']
+2025-11-01 18:09:58,800 - models.llm - INFO - ✅ Model 'llama2' is available in Ollama
+2025-11-01 18:09:58,800 - models.llm - INFO - ✅ Ollama is available, attempting generation...
+2025-11-01 18:09:58,800 - models.llm - INFO - 📋 Added system prompt to messages
+2025-11-01 18:09:58,800 - models.llm - INFO - 💬 Prepared 2 messages for Ollama
+2025-11-01 18:09:58,800 - models.llm - INFO - 🎯 Calling Ollama with model: llama2
+2025-11-01 18:11:20,547 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-11-01 18:11:20,553 - models.llm - INFO - 🎉 Ollama responded in 81.75 seconds
+2025-11-01 18:11:20,553 - models.llm - INFO - 📝 Response content length: 6294 characters
+2025-11-01 18:11:20,553 - rag_pipeline - INFO - 🎉 LLM response received in 81.76 seconds
+2025-11-01 18:11:20,553 - rag_pipeline - INFO - 📊 Response length: 6294 characters
+2025-11-01 18:11:20,553 - rag_pipeline - INFO - 🔍 Response preview: 'System Design Solution for "Hello, how are you?" Chatbot
+===========================================...'
+2025-11-01 18:11:20,553 - main - INFO - ✅ Request processed successfully in 81.76 seconds
+2025-11-01 18:11:20,553 - main - INFO - 📤 Response length: 6294 characters
