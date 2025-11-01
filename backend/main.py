@@ -22,3 +22,4 @@ class Query(BaseModel):
 async def design(q: Query):
     answer = rag.generate(q.question)
     return {"answer": answer}
+
