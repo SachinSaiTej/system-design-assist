@@ -1,9 +1,9 @@
+"""FastAPI application entry point for System Design Assistant."""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from rag_pipeline import SystemDesignRAG
 import logging
-import time
+
+from api.design import router as design_router
 
 # Set up logging
 logging.basicConfig(
@@ -16,51 +16,41 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+# Initialize FastAPI app
+app = FastAPI(
+    title="System Design Assistant API",
+    description="AI-powered system design generation API",
+    version="1.0.0"
+)
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow your Next.js frontend
+    allow_origins=["http://localhost:3000"],  # Allow Next.js frontend
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-logger.info("🚀 Initializing System Design RAG...")
-rag = SystemDesignRAG()
-logger.info("✅ System Design RAG initialized successfully!")
-
-class Query(BaseModel):
-    question: str
-
-@app.post("/design")
-async def design(q: Query):
-    start_time = time.time()
-    logger.info(f"📨 Received design request: '{q.question[:100]}...'")
-    
-    try:
-        logger.info("🔄 Processing request with RAG pipeline...")
-        answer = rag.generate(q.question)
-        
-        end_time = time.time()
-        processing_time = end_time - start_time
-        
-        logger.info(f"✅ Request processed successfully in {processing_time:.2f} seconds")
-        logger.info(f"📤 Response length: {len(answer)} characters")
-        
-        return {"answer": answer}
-    
-    except Exception as e:
-        end_time = time.time()
-        processing_time = end_time - start_time
-        
-        logger.error(f"❌ Error processing request after {processing_time:.2f} seconds: {str(e)}")
-        logger.error(f"🔍 Error type: {type(e).__name__}")
-        
-        return {"answer": f"Error: {str(e)}"}
+# Include routers
+app.include_router(design_router)
 
 @app.get("/health")
 async def health_check():
+    """Health check endpoint."""
     logger.info("🏥 Health check requested")
-    return {"status": "healthy", "message": "System Design Assistant is running!"}
+    return {
+        "status": "healthy",
+        "message": "System Design Assistant API is running!"
+    }
+
+@app.get("/")
+async def root():
+    """Root endpoint."""
+    return {
+        "message": "System Design Assistant API",
+        "version": "1.0.0",
+        "docs": "/docs"
+    }
+
+logger.info("✅ FastAPI application initialized successfully!")
