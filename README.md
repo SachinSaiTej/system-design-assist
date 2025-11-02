@@ -11,18 +11,33 @@ This is the MVP implementation featuring:
 - ✅ Beautiful Markdown rendering
 - ✅ Modular, iteration-ready architecture
 
+## 🎯 Phase 2 - Interactive Refinement
+
+Phase 2 adds powerful interactive features:
+- ✅ **Interactive Chat Refinement** - Refine designs with natural language instructions
+- ✅ **Section-Level Regeneration** - Regenerate individual sections with custom instructions
+- ✅ **Mermaid Diagram Rendering** - Automatic rendering of Mermaid diagrams in markdown
+- ✅ **Local Session Persistence** - Designs and history persist in localStorage
+- ✅ **Design History** - View and restore previous versions of your design
+- ✅ **Enhanced Markdown Support** - Full GFM support with syntax highlighting
+
 ## 📁 Project Structure
 
 ```
 system-design-assistant/
 ├── backend/                 # FastAPI backend
 │   ├── api/                # API routes
-│   │   └── design.py       # Design generation endpoint
+│   │   ├── design.py       # Design generation endpoint
+│   │   ├── refine.py       # Design refinement endpoint (Phase 2)
+│   │   └── section.py      # Section regeneration endpoint (Phase 2)
 │   ├── core/               # Core business logic
 │   │   ├── prompt_builder.py  # Markdown prompt builder
-│   │   └── ai_client.py     # AI client abstraction
+│   │   ├── ai_client.py     # AI client abstraction
+│   │   └── context_manager.py # Session context management (Phase 2)
 │   ├── schemas/            # Pydantic models
-│   │   └── design_schema.py
+│   │   ├── design_schema.py
+│   │   ├── refine_schema.py  # Phase 2
+│   │   └── section_schema.py # Phase 2
 │   ├── main.py             # FastAPI app entry point
 │   └── requirements.txt    # Python dependencies
 │
@@ -30,10 +45,16 @@ system-design-assistant/
     ├── src/
     │   ├── app/            # Next.js App Router
     │   │   ├── page.tsx    # Input page
-    │   │   └── result/     # Result page
-    │   └── components/      # React components
-    │       ├── MarkdownRenderer.tsx
-    │       └── LoadingSpinner.tsx
+    │   │   └── result/     # Result page (Phase 2 enhanced)
+    │   ├── components/     # React components
+    │   │   ├── MarkdownRenderer.tsx  # Enhanced with Mermaid (Phase 2)
+    │   │   ├── LoadingSpinner.tsx
+    │   │   ├── ChatPanel.tsx        # Phase 2
+    │   │   ├── SectionViewer.tsx    # Phase 2
+    │   │   ├── HistoryPanel.tsx     # Phase 2
+    │   │   └── MermaidRenderer.tsx   # Phase 2
+    │   └── store/          # State management
+    │       └── designStore.ts       # Zustand store with persistence (Phase 2)
     └── package.json
 ```
 
@@ -123,6 +144,35 @@ The frontend will be available at `http://localhost:3000`
    - Scalability & Trade-offs
    - Future Enhancements
 
+### Phase 2: Interactive Refinement Mode
+
+After generating a design, you can:
+
+1. **Refine the Design** (Chat Tab):
+   - Enter natural language instructions to improve or modify the design
+   - Examples: "Add caching layer", "Improve scalability section", "Add more details to architecture"
+   - The AI will update relevant sections while maintaining document structure
+
+2. **Regenerate Sections** (Sections Tab):
+   - View all document sections (H1 and H2 headings)
+   - Click "Regenerate" on any section with optional custom instructions
+   - Individual sections are updated independently
+
+3. **View History** (History Tab):
+   - See all previous versions of your design
+   - Restore any previous version with one click
+   - Track what changes were made with instruction history
+
+4. **Mermaid Diagrams**:
+   - Design documents can include Mermaid diagrams
+   - Diagrams are automatically rendered when marked with ```mermaid code blocks
+   - Supports flowcharts, sequence diagrams, and more
+
+5. **Local Persistence**:
+   - Your current design and history are saved to localStorage
+   - Refresh the page without losing your work
+   - Works across browser sessions
+
 ## 🔧 API Endpoints
 
 ### POST `/api/design/generate`
@@ -140,6 +190,50 @@ Generate a system design document.
 ```json
 {
   "design_markdown": "# System Design: Distributed Cache\n\n## Functional Requirements\n..."
+}
+```
+
+### POST `/api/refine` (Phase 2)
+
+Refine an existing design document.
+
+**Request:**
+```json
+{
+  "previous_design": "# System Design...",
+  "instruction": "Add caching layer with Redis",
+  "session_id": "optional-session-id"
+}
+```
+
+**Response:**
+```json
+{
+  "refined_design": "# System Design...",
+  "session_id": "session-uuid"
+}
+```
+
+### POST `/api/section` (Phase 2)
+
+Regenerate a specific section of a design.
+
+**Request:**
+```json
+{
+  "previous_design": "# System Design...",
+  "section_name": "High-Level Architecture",
+  "instruction": "Add more details about load balancing",
+  "session_id": "optional-session-id"
+}
+```
+
+**Response:**
+```json
+{
+  "updated_design": "# System Design...",
+  "regenerated_section": "## High-Level Architecture\n...",
+  "session_id": "session-uuid"
 }
 ```
 
@@ -207,17 +301,29 @@ npm run dev
 ### Frontend
 - `next` - React framework
 - `react-markdown` - Markdown rendering
+- `remark-gfm` - GitHub Flavored Markdown support (Phase 2)
+- `mermaid` - Diagram rendering (Phase 2)
+- `zustand` - State management with persistence (Phase 2)
 - `tailwindcss` - Styling
 - `typescript` - Type safety
 
-## 🚧 Future Enhancements (Phase 2+)
+## ✅ Phase 2 Completed Features
+
+- [x] Interactive chat-based refinement
+- [x] Section-level regeneration
+- [x] Mermaid diagram rendering
+- [x] Local session persistence
+- [x] Design history tracking
+- [x] Enhanced markdown support (GFM)
+
+## 🚧 Future Enhancements (Phase 3+)
 
 - [ ] RAG pipeline integration for context-aware responses
-- [ ] Diagram generation (Mermaid/PlantUML)
-- [ ] Design iteration and refinement
-- [ ] Save/load design documents
 - [ ] Export to PDF/Word
 - [ ] Collaborative editing
+- [ ] Version comparison/diff view
+- [ ] Template library
+- [ ] Multi-language support
 
 ## 📄 License
 

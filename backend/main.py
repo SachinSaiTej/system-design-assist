@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 
 from api.design import router as design_router
+from api.refine import router as refine_router
+from api.section import router as section_router
 
 # Set up logging
 logging.basicConfig(
@@ -20,7 +22,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="System Design Assistant API",
     description="AI-powered system design generation API",
-    version="1.0.0"
+    version="2.0.0"
 )
 
 # Add CORS middleware
@@ -34,6 +36,8 @@ app.add_middleware(
 
 # Include routers
 app.include_router(design_router)
+app.include_router(refine_router)
+app.include_router(section_router)
 
 @app.get("/health")
 async def health_check():
