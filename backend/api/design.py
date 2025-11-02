@@ -80,3 +80,19 @@ async def generate_design(request: DesignRequest):
         )
 
 
+@router.post("/generate_fresh", response_model=DesignResponse)
+async def generate_fresh_design(request: DesignRequest):
+    """
+    Generate a fresh system design document without web references.
+    This is the fallback to Phase 1 generator.
+    
+    Args:
+        request: DesignRequest containing user_input
+        
+    Returns:
+        DesignResponse with markdown-formatted design document
+    """
+    # Delegate to existing generate_design endpoint
+    return await generate_design(request)
+
+

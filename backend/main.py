@@ -6,6 +6,8 @@ import logging
 from api.design import router as design_router
 from api.refine import router as refine_router
 from api.section import router as section_router
+from api.retrieve_refs import router as retrieve_refs_router
+from api.adapt import router as adapt_router
 
 # Set up logging
 logging.basicConfig(
@@ -38,6 +40,8 @@ app.add_middleware(
 app.include_router(design_router)
 app.include_router(refine_router)
 app.include_router(section_router)
+app.include_router(retrieve_refs_router)
+app.include_router(adapt_router)
 
 @app.get("/health")
 async def health_check():

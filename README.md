@@ -21,6 +21,17 @@ Phase 2 adds powerful interactive features:
 - ✅ **Design History** - View and restore previous versions of your design
 - ✅ **Enhanced Markdown Support** - Full GFM support with syntax highlighting
 
+## 🌐 Phase 3 - Web-Aware Retrieval & Adaptation
+
+Phase 3 enhances the system with web-aware reference retrieval and adaptation:
+- ✅ **Web Reference Search** - Automatically searches web (ByteByteGo, GitHub, Medium, etc.) for existing designs
+- ✅ **Reference Summarization** - AI-powered summarization of references with highlights, components, and confidence scores
+- ✅ **Adapt Existing Designs** - Adapt chosen references using ByteByteGo framework
+- ✅ **Generate Fresh Option** - Fallback to Phase 1 generation when no references found
+- ✅ **Reference Caching** - SQLite-based caching of reference summaries (7-day expiry)
+- ✅ **Smart Content Extraction** - Respectful web scraping with robots.txt compliance
+- ✅ **Sources & Changes Tracking** - Adapted designs include Sources section and Changes vs Source summary
+
 ## 📁 Project Structure
 
 ```
@@ -29,15 +40,24 @@ system-design-assistant/
 │   ├── api/                # API routes
 │   │   ├── design.py       # Design generation endpoint
 │   │   ├── refine.py       # Design refinement endpoint (Phase 2)
-│   │   └── section.py      # Section regeneration endpoint (Phase 2)
+│   │   ├── section.py      # Section regeneration endpoint (Phase 2)
+│   │   ├── retrieve_refs.py # Reference retrieval endpoint (Phase 3)
+│   │   └── adapt.py        # Design adaptation endpoint (Phase 3)
 │   ├── core/               # Core business logic
 │   │   ├── prompt_builder.py  # Markdown prompt builder
 │   │   ├── ai_client.py     # AI client abstraction
-│   │   └── context_manager.py # Session context management (Phase 2)
+│   │   ├── context_manager.py # Session context management (Phase 2)
+│   │   ├── retriever.py     # Web search retriever (Phase 3)
+│   │   ├── summarizer.py    # Reference summarizer (Phase 3)
+│   │   └── reference_store.py # Reference caching (Phase 3)
+│   ├── services/           # Service modules
+│   │   └── scraper.py      # Web content scraper (Phase 3)
 │   ├── schemas/            # Pydantic models
 │   │   ├── design_schema.py
 │   │   ├── refine_schema.py  # Phase 2
-│   │   └── section_schema.py # Phase 2
+│   │   ├── section_schema.py # Phase 2
+│   │   ├── retrieve_schema.py # Phase 3
+│   │   └── adapt_schema.py   # Phase 3
 │   ├── main.py             # FastAPI app entry point
 │   └── requirements.txt    # Python dependencies
 │
@@ -49,10 +69,12 @@ system-design-assistant/
     │   ├── components/     # React components
     │   │   ├── MarkdownRenderer.tsx  # Enhanced with Mermaid (Phase 2)
     │   │   ├── LoadingSpinner.tsx
-    │   │   ├── ChatPanel.tsx        # Phase 2
-    │   │   ├── SectionViewer.tsx    # Phase 2
-    │   │   ├── HistoryPanel.tsx     # Phase 2
-    │   │   └── MermaidRenderer.tsx   # Phase 2
+│   │   ├── ChatPanel.tsx        # Phase 2
+│   │   ├── SectionViewer.tsx    # Phase 2
+│   │   ├── HistoryPanel.tsx     # Phase 2
+│   │   ├── MermaidRenderer.tsx   # Phase 2
+│   │   ├── ReferencePanel.tsx    # Phase 3
+│   │   └── AdaptConfirmModal.tsx # Phase 3
     │   └── store/          # State management
     │       └── designStore.ts       # Zustand store with persistence (Phase 2)
     └── package.json
@@ -65,6 +87,9 @@ system-design-assistant/
 - Python 3.10+
 - Node.js 18+
 - OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
+- (Phase 3) At least one web search API key:
+  - SerpAPI key ([Get one here](https://serpapi.com/)) OR
+  - Bing Search API key ([Get one here](https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/))
 
 ### Backend Setup
 
@@ -89,10 +114,16 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-5. Edit `.env` and add your OpenAI API key:
+5. Edit `.env` and add your API keys:
 ```
 OPENAI_API_KEY=your_actual_api_key_here
 OPENAI_MODEL=gpt-4
+
+# Phase 3: At least one search API key required
+SERPAPI_KEY=your_serpapi_key_here
+# OR
+BING_API_KEY=your_bing_api_key_here
+BING_SEARCH_URL=https://api.bing.microsoft.com/v7.0/search
 ```
 
 6. Run the FastAPI server:
@@ -143,6 +174,28 @@ The frontend will be available at `http://localhost:3000`
    - Technology Stack Recommendations
    - Scalability & Trade-offs
    - Future Enhancements
+
+### Phase 3: Web-Aware Retrieval Mode
+
+1. **Enter your requirements** and click "Find References & Generate Design"
+
+2. **Review References**:
+   - System automatically searches web for existing designs
+   - View summarized references with confidence scores
+   - Each reference shows highlights, components, and assumptions
+
+3. **Choose Your Path**:
+   - **Adapt a Reference**: Click "Adapt This Design" on any reference
+     - Add optional constraints/modifications
+     - Design will be adapted using ByteByteGo framework
+     - Includes "Sources" and "Changes vs Source" sections
+   - **Generate Fresh**: Click "Generate Fresh Design" to skip references
+     - Falls back to Phase 1 generation
+
+4. **View Adapted Design**:
+   - Adapted designs include full ByteByteGo framework structure
+   - Sources section lists all referenced URLs
+   - Changes vs Source section summarizes modifications
 
 ### Phase 2: Interactive Refinement Mode
 
@@ -237,6 +290,82 @@ Regenerate a specific section of a design.
 }
 ```
 
+### POST `/api/retrieve_refs` (Phase 3)
+
+Search the web and retrieve summarized references for a user query.
+
+**Request:**
+```json
+{
+  "user_input": "Design a URL shortener",
+  "max_results": 5
+}
+```
+
+**Response:**
+```json
+{
+  "query": "Design a URL shortener",
+  "references": [
+    {
+      "title": "Designing a URL Shortener",
+      "url": "https://example.com/url-shortener",
+      "highlights": ["...", "...", "..."],
+      "assumptions": ["..."],
+      "components": ["..."],
+      "confidence_score": 0.85,
+      "snippet": "..."
+    }
+  ]
+}
+```
+
+### POST `/api/adapt` (Phase 3)
+
+Adapt a chosen reference design.
+
+**Request:**
+```json
+{
+  "user_input": "Design a URL shortener for 100M URLs/day",
+  "reference": {
+    "title": "Designing a URL Shortener",
+    "url": "https://example.com/url-shortener",
+    "highlights": ["...", "...", "..."],
+    "assumptions": ["..."],
+    "components": ["..."]
+  },
+  "constraints": "Must use AWS, add Redis caching"
+}
+```
+
+**Response:**
+```json
+{
+  "design_markdown": "# System Design: URL Shortener\n...",
+  "sources": ["https://example.com/url-shortener"],
+  "changes_summary": "Added AWS services, Redis caching layer..."
+}
+```
+
+### POST `/api/design/generate_fresh` (Phase 3)
+
+Generate a fresh design without web references (Phase 1 fallback).
+
+**Request:**
+```json
+{
+  "user_input": "Design a distributed cache system"
+}
+```
+
+**Response:**
+```json
+{
+  "design_markdown": "# System Design: Distributed Cache\n..."
+}
+```
+
 ### GET `/health`
 
 Health check endpoint.
@@ -255,6 +384,11 @@ Health check endpoint.
 |----------|-------------|----------|---------|
 | `OPENAI_API_KEY` | OpenAI API key | Yes | - |
 | `OPENAI_MODEL` | OpenAI model to use | No | `gpt-4` |
+| `SERPAPI_KEY` | SerpAPI key for web search (Phase 3) | Phase 3* | - |
+| `BING_API_KEY` | Bing Search API key (Phase 3) | Phase 3* | - |
+| `BING_SEARCH_URL` | Bing Search API endpoint (Phase 3) | No | `https://api.bing.microsoft.com/v7.0/search` |
+
+\* At least one search API key (SERPAPI_KEY or BING_API_KEY) is required for Phase 3 features
 
 ## 🏗️ Architecture
 
@@ -297,6 +431,9 @@ npm run dev
 - `openai` - OpenAI API client
 - `pydantic` - Data validation
 - `python-dotenv` - Environment variables
+- `readability-lxml` - Web content extraction (Phase 3)
+- `newspaper3k` - Alternative web content extraction (Phase 3)
+- `requests` - HTTP client for web search (Phase 3)
 
 ### Frontend
 - `next` - React framework
@@ -316,7 +453,18 @@ npm run dev
 - [x] Design history tracking
 - [x] Enhanced markdown support (GFM)
 
-## 🚧 Future Enhancements (Phase 3+)
+## ✅ Phase 3 Completed Features
+
+- [x] Web reference retrieval (SerpAPI/Bing)
+- [x] AI-powered reference summarization
+- [x] Reference panel UI with confidence scores
+- [x] Design adaptation using ByteByteGo framework
+- [x] Reference caching with SQLite (7-day expiry)
+- [x] Web content extraction with robots.txt compliance
+- [x] Sources and Changes vs Source sections in adapted designs
+- [x] Fallback to fresh generation when no references found
+
+## 🚧 Future Enhancements (Phase 4+)
 
 - [ ] RAG pipeline integration for context-aware responses
 - [ ] Export to PDF/Word
@@ -324,6 +472,8 @@ npm run dev
 - [ ] Version comparison/diff view
 - [ ] Template library
 - [ ] Multi-language support
+- [ ] Reference similarity scoring improvements
+- [ ] Multi-reference adaptation (combining multiple sources)
 
 ## 📄 License
 
