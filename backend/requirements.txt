@@ -1,0 +1,11 @@
+streamlit==1.39.0
+chromadb==0.5.5
+sentence-transformers==3.0.1
+pypdf==4.3.1
+markdown-it-py==3.0.0
+duckduckgo-search==6.2.6
+requests>=2.32.3
+litellm==1.53.13
+python-dotenv==1.0.1
+tqdm==4.66.5
+rapidfuzz==3.9.7
