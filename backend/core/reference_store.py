@@ -30,7 +30,7 @@ class ReferenceStore:
         cursor = conn.cursor()
         
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS references (
+            CREATE TABLE IF NOT EXISTS "references" (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 query_hash TEXT UNIQUE NOT NULL,
                 query_text TEXT NOT NULL,
@@ -41,11 +41,11 @@ class ReferenceStore:
         """)
         
         cursor.execute("""
-            CREATE INDEX IF NOT EXISTS idx_query_hash ON references(query_hash)
+            CREATE INDEX IF NOT EXISTS idx_query_hash ON "references"(query_hash)
         """)
         
         cursor.execute("""
-            CREATE INDEX IF NOT EXISTS idx_expires_at ON references(expires_at)
+            CREATE INDEX IF NOT EXISTS idx_expires_at ON "references"(expires_at)
         """)
         
         conn.commit()
@@ -63,7 +63,7 @@ class ReferenceStore:
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            cursor.execute("DELETE FROM references WHERE expires_at < ?", (datetime.now(),))
+            cursor.execute('DELETE FROM "references" WHERE expires_at < ?', (datetime.now(),))
             deleted = cursor.rowcount
             conn.commit()
             conn.close()
@@ -90,7 +90,7 @@ class ReferenceStore:
             
             cursor.execute("""
                 SELECT references_json, expires_at 
-                FROM references 
+                FROM "references" 
                 WHERE query_hash = ?
             """, (query_hash,))
             
@@ -135,7 +135,7 @@ class ReferenceStore:
             references_json = json.dumps(references)
             
             cursor.execute("""
-                INSERT OR REPLACE INTO references 
+                INSERT OR REPLACE INTO "references" 
                 (query_hash, query_text, references_json, expires_at)
                 VALUES (?, ?, ?, ?)
             """, (query_hash, query, references_json, expires_at.isoformat()))
@@ -153,7 +153,7 @@ class ReferenceStore:
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            cursor.execute("DELETE FROM references WHERE query_hash = ?", (query_hash,))
+            cursor.execute('DELETE FROM "references" WHERE query_hash = ?', (query_hash,))
             conn.commit()
             conn.close()
         except Exception as e:

@@ -84,3 +84,4 @@ Thumbs.db
 ./backend/.venv/
 ./backend/*.log
 backend/system_design_app.log
+backend/data/reference_cache.db
