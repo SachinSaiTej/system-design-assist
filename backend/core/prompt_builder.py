@@ -136,4 +136,89 @@ Ensure the regenerated section integrates well with the rest of the document.
 ### Response
 Return only the regenerated section in Markdown format, maintaining proper heading level for the section."""
 
+    @staticmethod
+    def build_adaptation_prompt(
+        user_input: str,
+        reference_summaries: list,
+        constraints: Optional[str] = None
+    ) -> str:
+        """
+        Build a prompt for adapting an existing reference design.
+        
+        Args:
+            user_input: User's original request
+            reference_summaries: List of reference summary dicts with title, url, highlights, assumptions, components
+            constraints: Optional additional constraints
+            
+        Returns:
+            Formatted prompt string
+        """
+        # Format reference summaries
+        ref_texts = []
+        sources = []
+        for ref in reference_summaries:
+            title = ref.get("title", "Untitled")
+            url = ref.get("url", "")
+            highlights = ref.get("highlights", [])
+            assumptions = ref.get("assumptions", [])
+            components = ref.get("components", [])
+            
+            sources.append(url)
+            
+            ref_text = f"**{title}** ({url})\n"
+            if highlights:
+                ref_text += "Highlights:\n"
+                for h in highlights:
+                    if h:
+                        ref_text += f"- {h}\n"
+            if assumptions:
+                ref_text += "Assumptions:\n"
+                for a in assumptions:
+                    if a:
+                        ref_text += f"- {a}\n"
+            if components:
+                ref_text += "Components: " + ", ".join(components) + "\n"
+            
+            ref_texts.append(ref_text)
+        
+        references_section = "\n\n".join(ref_texts)
+        sources_section = "\n".join([f"- {url}" for url in sources if url])
+        
+        constraints_section = ""
+        if constraints:
+            constraints_section = f"\nAdditional Constraints: {constraints}\n"
+        
+        return f"""### Context
+User Request: {user_input}
+{constraints_section}
+### Web References
+{references_section}
+
+### Task
+Use the **ByteByteGo System Design Framework** to adapt the most relevant reference(s) above.
+Follow this structure:
+1. **Requirements** (Functional & Non-Functional)
+2. **Capacity Estimation**
+3. **API Design**
+4. **High-Level Design (HLD)**
+5. **Component Details**
+6. **Data Flow**
+7. **Trade-offs**
+8. **Future Enhancements**
+9. **Sources** (list of URLs referenced)
+10. **Changes vs Source** (short summary of modifications)
+
+### Instructions
+- Keep the original structure and tone from the reference where appropriate
+- Explicitly note any modifications relative to the reference
+- If information is missing from the reference, propose your own design decisions
+- Use Mermaid diagrams (```mermaid ... ```) to visualize architecture and data flow
+- Cite sources appropriately (never include verbatim text > 25 words)
+- The "Changes vs Source" section should briefly summarize what was modified, added, or removed
+
+### Response
+Return a complete system design document in Markdown format.
+Include the Sources and Changes vs Source sections at the end.
+Do not include additional JSON wrapping."""
+
 
