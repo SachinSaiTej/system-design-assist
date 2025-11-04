@@ -53,7 +53,7 @@ async def retrieve_references(request: RetrieveRefsRequest):
         )
         
         if not search_results:
-            logger.warning("⚠️  No search results found")
+            logger.warning("⚠️  No search results found from Perplexity. Skipping web search and will generate fresh design.")
             return RetrieveRefsResponse(
                 references=[],
                 query=request.user_input

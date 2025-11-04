@@ -47,9 +47,15 @@ system-design-assistant/
 │   │   ├── prompt_builder.py  # Markdown prompt builder
 │   │   ├── ai_client.py     # AI client abstraction
 │   │   ├── context_manager.py # Session context management (Phase 2)
+│   │   ├── web_searcher.py  # WebSearcher abstract interface (Phase 3)
 │   │   ├── retriever.py     # Web search retriever (Phase 3)
 │   │   ├── summarizer.py    # Reference summarizer (Phase 3)
-│   │   └── reference_store.py # Reference caching (Phase 3)
+│   │   ├── reference_store.py # Reference caching (Phase 3)
+│   │   └── searchers/       # Web search provider implementations
+│   │       ├── __init__.py
+│   │       ├── perplexity_searcher.py
+│   │       ├── serpapi_searcher.py
+│   │       └── bing_searcher.py
 │   ├── services/           # Service modules
 │   │   └── scraper.py      # Web content scraper (Phase 3)
 │   ├── schemas/            # Pydantic models
@@ -88,6 +94,7 @@ system-design-assistant/
 - Node.js 18+
 - OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
 - (Phase 3) At least one web search API key:
+  - **Perplexity API key** (Recommended - [Get one here](https://www.perplexity.ai/settings/account)) OR
   - SerpAPI key ([Get one here](https://serpapi.com/)) OR
   - Bing Search API key ([Get one here](https://azure.microsoft.com/en-us/services/cognitive-services/bing-web-search-api/))
 
@@ -119,11 +126,17 @@ cp .env.example .env
 OPENAI_API_KEY=your_actual_api_key_here
 OPENAI_MODEL=gpt-4
 
-# Phase 3: At least one search API key required
+# Phase 3: At least one search API key required (Perplexity recommended)
+PERPLEXITY_API_KEY=your_perplexity_api_key_here
+# OR
 SERPAPI_KEY=your_serpapi_key_here
 # OR
 BING_API_KEY=your_bing_api_key_here
 BING_SEARCH_URL=https://api.bing.microsoft.com/v7.0/search
+
+# Optional: Specify preferred search provider (perplexity, serpapi, bing)
+# If not set, auto-detects based on available API keys
+WEB_SEARCH_PROVIDER=perplexity
 ```
 
 6. Run the FastAPI server:
@@ -384,11 +397,13 @@ Health check endpoint.
 |----------|-------------|----------|---------|
 | `OPENAI_API_KEY` | OpenAI API key | Yes | - |
 | `OPENAI_MODEL` | OpenAI model to use | No | `gpt-4` |
+| `PERPLEXITY_API_KEY` | Perplexity API key for web search (Phase 3, recommended) | Phase 3* | - |
 | `SERPAPI_KEY` | SerpAPI key for web search (Phase 3) | Phase 3* | - |
 | `BING_API_KEY` | Bing Search API key (Phase 3) | Phase 3* | - |
 | `BING_SEARCH_URL` | Bing Search API endpoint (Phase 3) | No | `https://api.bing.microsoft.com/v7.0/search` |
+| `WEB_SEARCH_PROVIDER` | Preferred search provider (perplexity, serpapi, bing) | No | Auto-detected |
 
-\* At least one search API key (SERPAPI_KEY or BING_API_KEY) is required for Phase 3 features
+\* At least one search API key (PERPLEXITY_API_KEY, SERPAPI_KEY, or BING_API_KEY) is required for Phase 3 features. Perplexity is recommended for better web research capabilities. The system will auto-select the first available provider unless `WEB_SEARCH_PROVIDER` is set.
 
 ## 🏗️ Architecture
 
@@ -398,6 +413,12 @@ Health check endpoint.
 - **Modular Structure**: Separated into API routes, core logic, and schemas
 - **Prompt Builder**: Structured markdown prompt generation
 - **AI Client**: Abstraction layer for LLM interactions
+- **SOLID Principles**: 
+  - **Interface Segregation**: `WebSearcher` abstract base class for search providers
+  - **Open/Closed**: Easy to add new search providers without modifying existing code
+  - **Dependency Inversion**: `WebRetriever` depends on abstractions, not concrete implementations
+  - **Single Responsibility**: Each searcher class handles one specific provider
+- **Web Search Providers**: Configurable search providers (Perplexity, SerpAPI, Bing) with auto-detection
 
 ### Frontend
 
@@ -455,7 +476,7 @@ npm run dev
 
 ## ✅ Phase 3 Completed Features
 
-- [x] Web reference retrieval (SerpAPI/Bing)
+- [x] Web reference retrieval (Perplexity API, SerpAPI, Bing)
 - [x] AI-powered reference summarization
 - [x] Reference panel UI with confidence scores
 - [x] Design adaptation using ByteByteGo framework
